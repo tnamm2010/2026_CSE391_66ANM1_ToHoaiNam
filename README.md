@@ -42,24 +42,6 @@ Repository này được tạo để lưu trữ toàn bộ **bài thực hành (
 
 ---
 
-## 📂 Cấu trúc thư mục
-
-> 📌 Cấu trúc có thể thay đổi theo tiến độ môn học.
-
-2026_CSE391_66ANM1_ToHoaiNam/
-├── TH1/ ← Thực hành số 1
-│ ├── TH3.html
-│ └── TH4.html
-| 
-│
-├── BaiTH3.html ← Bài thực hành (file lẻ nếu có)
-│
-└── README.md ← Giới thiệu repository 
-
-
-
----
-
 ## 🧰 Công nghệ sử dụng
 
 - **HTML5**: Cấu trúc trang Web, form, table, semantic

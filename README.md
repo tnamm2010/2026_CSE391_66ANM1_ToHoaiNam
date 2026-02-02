@@ -1,4 +1,8 @@
-# 🎓 CSE391 - WEB DEVELOPMENT FUNDAMENTALS  
+<p align="center">
+  <img src="https://inkythuatso.com/uploads/images/2021/12/logo-dai-hoc-thuy-loi-inkythuatso-converted-01-23-08-44-48.jpg" alt="Logo ĐH Thủy Lợi" width="200">
+</p>
+
+# 🎓 CSE391 - Nền Tảng Phát Triển Web 
 ## 📌 Repository bài tập & thực hành (66ANM1)
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
@@ -11,6 +15,7 @@
 ## 👋 Giới thiệu
 
 Xin chào! Mình là **Tô Hoài Nam** 👨‍🎓  
+Sinh Viên Lớp 66ANM1, Trường Đại Học Thủy 
 Repository này được tạo để lưu trữ toàn bộ **bài thực hành (TH)** và **bài tập** trong môn:
 
 > **Nền Tảng Phát Triển Web - CSE391**  

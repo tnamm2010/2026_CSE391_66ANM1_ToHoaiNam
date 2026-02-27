@@ -1,0 +1,199 @@
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #5b1b5f;       
+  color: #111;
+}
+a { text-decoration: none; color: inherit; }
+
+.container {
+  width: min(1100px, 92%);
+  margin: 0 auto;
+}
+
+.header {
+  padding: 16px 0;
+  background: transparent;
+}
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #f2c94c;
+  text-transform: uppercase;
+}
+.nav {
+  display: flex;
+  gap: 16px;
+}
+.nav__link {
+  padding: 8px 12px;
+  border: 1px solid rgba(255,255,255,.25);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.nav__link:hover {
+  border-color: rgba(255,255,255,.6);
+}
+
+.hero {
+  position: relative;
+  height: 420px;
+  border: 6px solid #ff59d6;     
+  margin: 8px auto 0;
+  width: min(1100px, 92%);
+  background-image: url("https://eutrip.vn/view/admin/Themes/kcfinder/upload/images/danhmuctour/Anh/DIA-DIEM-DU-LICH-O-LONDON-ANH-EUTRIP.jpg");  /* dùng 1 ảnh làm nền hero */
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.25);
+}
+
+.hero__content {
+  position: relative;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.hero__card {
+  width: min(520px, 92%);
+  background: rgba(30,30,30,.72);
+  color: #fff;
+  text-align: center;
+  padding: 28px 22px;
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.35);
+}
+
+.hero__card h1 {
+  font-size: 28px;
+  letter-spacing: .5px;
+  margin-bottom: 8px;
+}
+.hero__card p {
+  font-size: 13px;
+  opacity: .9;
+  margin-bottom: 14px;
+}
+
+.btn {
+  display: inline-block;
+  background: #f2c94c;
+  color: #111;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+.btn:hover { filter: brightness(0.95); }
+
+.highlights {
+  width: min(1100px, 92%);
+  margin: 0 auto;
+  background: #bdf6ff;
+  border-left: 6px solid #ff59d6;
+  border-right: 6px solid #ff59d6;
+  border-bottom: 6px solid #ff59d6;
+  padding: 18px 0 28px;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 16px;
+  letter-spacing: 2px;
+  margin: 4px 0 14px;
+  color: #2b2b2b;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.place {
+  background: rgba(255,255,255,.65);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,.08);
+}
+
+.place__img {
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+}
+
+.place__title {
+  text-align: center;
+  padding: 10px 8px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #333;
+}
+.place__title span {
+  color: #666;
+  font-weight: 600;
+}
+
+.footer {
+  width: min(1100px, 92%);
+  margin: 0 auto 24px;
+  border: 6px solid #ff59d6;
+  border-top: none;
+  background: #111;
+  padding: 18px 0;
+}
+
+.footer__inner {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.social {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-weight: 800;
+  font-size: 18px;
+}
+.social:hover { background: rgba(255,255,255,.14); }
+.social {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-size: 22px;
+  transition: 0.3s;
+}
+
+.social:hover {
+  background: #f2c94c;
+  color: black;
+}
+@media (max-width: 860px) {
+  .grid { grid-template-columns: 1fr; }
+  .place__img { height: 170px; }
+  .hero { height: 380px; }
+}

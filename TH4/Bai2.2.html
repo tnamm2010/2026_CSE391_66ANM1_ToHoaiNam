@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form đặt hàng</title>
+<style>
+body{
+    font-family: Arial, sans-serif;
+    max-width: 520px;
+    margin: auto;
+    padding: 15px;
+}
+h3{
+    text-align: center;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.box{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+input, select, textarea, button{
+    padding: 10px;
+    font-size: 15px;
+}
+textarea{
+    min-height: 80px;
+    resize: vertical;
+}
+.error{
+    color: red;
+    font-size: 14px;
+}
+.count{
+    text-align: right;
+    font-size: 13px;
+    color: #666;
+}
+.red{
+    color: red;
+}
+.total{
+    font-weight: bold;
+}
+.row{
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+#confirmBox, #success{
+    display: none;
+    margin-top: 15px;
+    border: 1px solid #ccc;
+    padding: 12px;
+}
+.btns{
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+</style>
+</head>
+<body>
+
+<h3>Form đặt hàng</h3>
+
+<form id="form">
+    <div class="box">
+        <label>Tên sản phẩm</label>
+        <select id="product">
+            <option value="">-- Chọn sản phẩm --</option>
+            <option value="Áo">Áo</option>
+            <option value="Quần">Quần</option>
+            <option value="Giày">Giày</option>
+        </select>
+        <span class="error" id="productError"></span>
+    </div>
+
+    <div class="box">
+        <label>Số lượng</label>
+        <input type="number" id="quantity" min="1" max="99">
+        <span class="error" id="quantityError"></span>
+    </div>
+
+    <div class="box">
+        <label>Ngày giao hàng</label>
+        <input type="date" id="deliveryDate">
+        <span class="error" id="deliveryDateError"></span>
+    </div>
+
+    <div class="box">
+        <label>Địa chỉ giao</label>
+        <input type="text" id="address">
+        <span class="error" id="addressError"></span>
+    </div>
+
+    <div class="box">
+        <label>Ghi chú</label>
+        <textarea id="note"></textarea>
+        <div class="count" id="noteCount">0/200</div>
+        <span class="error" id="noteError"></span>
+    </div>
+
+    <div class="box">
+        <label>Phương thức thanh toán</label>
+        <div class="row">
+            <label><input type="radio" name="payment" value="COD"> COD</label>
+            <label><input type="radio" name="payment" value="Chuyển khoản"> Chuyển khoản</label>
+            <label><input type="radio" name="payment" value="Ví điện tử"> Ví điện tử</label>
+        </div>
+        <span class="error" id="paymentError"></span>
+    </div>
+
+    <div class="total" id="totalMoney">Tổng tiền: 0 đ</div>
+
+    <button type="submit">Đặt hàng</button>
+</form>
+
+<div id="confirmBox">
+    <div id="summary"></div>
+    <div class="btns">
+        <button type="button" id="confirmBtn">Xác nhận</button>
+        <button type="button" id="cancelBtn">Hủy</button>
+    </div>
+</div>
+
+<div id="success"></div>
+
+<script>
+const form = document.getElementById("form")
+const product = document.getElementById("product")
+const quantity = document.getElementById("quantity")
+const deliveryDate = document.getElementById("deliveryDate")
+const address = document.getElementById("address")
+const note = document.getElementById("note")
+const noteCount = document.getElementById("noteCount")
+const totalMoney = document.getElementById("totalMoney")
+const confirmBox = document.getElementById("confirmBox")
+const summary = document.getElementById("summary")
+const confirmBtn = document.getElementById("confirmBtn")
+const cancelBtn = document.getElementById("cancelBtn")
+const success = document.getElementById("success")
+
+const prices = {
+    "Áo": 150000,
+    "Quần": 200000,
+    "Giày": 500000
+}
+
+function showError(id, message){
+    document.getElementById(id + "Error").innerText = message
+}
+
+function clearError(id){
+    document.getElementById(id + "Error").innerText = ""
+}
+
+function formatMoney(number){
+    return Number(number).toLocaleString("vi-VN") + " đ"
+}
+
+function getTotal(){
+    let p = product.value
+    let q = Number(quantity.value)
+
+    if(!prices[p] || !Number.isInteger(q) || q < 1 || q > 99) return 0
+    return prices[p] * q
+}
+
+function updateTotal(){
+    totalMoney.innerText = "Tổng tiền: " + formatMoney(getTotal())
+}
+
+function validateProduct(){
+    if(product.value === ""){
+        showError("product", "Vui lòng chọn sản phẩm")
+        return false
+    }
+    clearError("product")
+    return true
+}
+
+function validateQuantity(){
+    let q = Number(quantity.value)
+
+    if(quantity.value === ""){
+        showError("quantity", "Vui lòng nhập số lượng")
+        return false
+    }
+    if(!Number.isInteger(q) || q < 1 || q > 99){
+        showError("quantity", "Số lượng phải là số nguyên từ 1 đến 99")
+        return false
+    }
+    clearError("quantity")
+    return true
+}
+
+function validateDeliveryDate(){
+    let value = deliveryDate.value
+
+    if(value === ""){
+        showError("deliveryDate", "Vui lòng chọn ngày giao hàng")
+        return false
+    }
+
+    let today = new Date()
+    let minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    let maxDate = new Date(minDate)
+    maxDate.setDate(maxDate.getDate() + 30)
+
+    let chosen = new Date(value)
+    chosen.setHours(0,0,0,0)
+
+    if(chosen < minDate){
+        showError("deliveryDate", "Ngày giao không được là ngày trong quá khứ")
+        return false
+    }
+    if(chosen > maxDate){
+        showError("deliveryDate", "Ngày giao không được quá 30 ngày từ hôm nay")
+        return false
+    }
+
+    clearError("deliveryDate")
+    return true
+}
+
+function validateAddress(){
+    let value = address.value.trim()
+
+    if(value === ""){
+        showError("address", "Địa chỉ giao không được để trống")
+        return false
+    }
+    if(value.length < 10){
+        showError("address", "Địa chỉ giao phải từ 10 ký tự trở lên")
+        return false
+    }
+
+    clearError("address")
+    return true
+}
+
+function validateNote(){
+    let value = note.value
+
+    if(value.length > 200){
+        showError("note", "Ghi chú không được quá 200 ký tự")
+        return false
+    }
+
+    clearError("note")
+    return true
+}
+
+function validatePayment(){
+    let checked = document.querySelector('input[name="payment"]:checked')
+
+    if(!checked){
+        showError("payment", "Vui lòng chọn phương thức thanh toán")
+        return false
+    }
+
+    clearError("payment")
+    return true
+}
+
+function updateNoteCount(){
+    let len = note.value.length
+    noteCount.innerText = len + "/200"
+
+    if(len > 200){
+        noteCount.classList.add("red")
+        showError("note", "Ghi chú không được quá 200 ký tự")
+    }else{
+        noteCount.classList.remove("red")
+        clearError("note")
+    }
+}
+
+function showConfirmBox(){
+    summary.innerHTML = `
+        <b>Thông tin đơn hàng</b><br>
+        Tên SP: ${product.value}<br>
+        Số lượng: ${quantity.value}<br>
+        Tổng tiền: ${formatMoney(getTotal())}<br>
+        Ngày giao: ${deliveryDate.value}<br><br>
+        <b>Xác nhận đặt hàng?</b>
+    `
+    confirmBox.style.display = "block"
+}
+
+form.addEventListener("submit", function(e){
+    e.preventDefault()
+
+    let ok = validateProduct() & validateQuantity() & validateDeliveryDate() & validateAddress() & validateNote() & validatePayment()
+
+    if(ok){
+        showConfirmBox()
+    }else{
+        confirmBox.style.display = "none"
+    }
+})
+
+confirmBtn.addEventListener("click", function(){
+    form.style.display = "none"
+    confirmBox.style.display = "none"
+    success.style.display = "block"
+    success.innerHTML = "Đặt hàng thành công! 🎉"
+})
+
+cancelBtn.addEventListener("click", function(){
+    confirmBox.style.display = "none"
+})
+
+product.addEventListener("blur", validateProduct)
+quantity.addEventListener("blur", validateQuantity)
+deliveryDate.addEventListener("blur", validateDeliveryDate)
+address.addEventListener("blur", validateAddress)
+note.addEventListener("blur", validateNote)
+
+product.addEventListener("change", function(){
+    clearError("product")
+    updateTotal()
+})
+
+quantity.addEventListener("input", function(){
+    clearError("quantity")
+    updateTotal()
+})
+
+deliveryDate.addEventListener("input", function(){
+    clearError("deliveryDate")
+})
+
+address.addEventListener("input", function(){
+    clearError("address")
+})
+
+note.addEventListener("input", function(){
+    updateNoteCount()
+})
+
+document.querySelectorAll('input[name="payment"]').forEach(item => {
+    item.addEventListener("blur", validatePayment)
+    item.addEventListener("change", function(){
+        clearError("payment")
+    })
+})
+
+updateTotal()
+updateNoteCount()
+</script>
+
+</body>
+</html>

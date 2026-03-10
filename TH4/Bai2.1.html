@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đăng ký tài khoản Sinh viên Hoài Nam</title>
+<style>
+body{
+    font-family: Arial, sans-serif;
+    max-width: 480px;
+    margin: auto;
+    padding: 15px;
+}
+h3{
+    text-align: center;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.box{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+input{
+    padding: 10px;
+    font-size: 15px;
+}
+.error{
+    color: red;
+    font-size: 14px;
+}
+.row{
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+button{
+    padding: 10px;
+    cursor: pointer;
+}
+#success{
+    display: none;
+    text-align: center;
+    color: green;
+    font-size: 20px;
+    margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<h3>Form đăng ký tài khoản</h3>
+
+<form id="form">
+    <div class="box">
+        <label>Họ và tên</label>
+        <input type="text" id="fullname">
+        <span class="error" id="fullnameError"></span>
+    </div>
+
+    <div class="box">
+        <label>Email</label>
+        <input type="text" id="email">
+        <span class="error" id="emailError"></span>
+    </div>
+
+    <div class="box">
+        <label>Số điện thoại</label>
+        <input type="text" id="phone">
+        <span class="error" id="phoneError"></span>
+    </div>
+
+    <div class="box">
+        <label>Mật khẩu</label>
+        <input type="password" id="password">
+        <span class="error" id="passwordError"></span>
+    </div>
+
+    <div class="box">
+        <label>Xác nhận mật khẩu</label>
+        <input type="password" id="confirmPassword">
+        <span class="error" id="confirmPasswordError"></span>
+    </div>
+
+    <div class="box">
+        <label>Giới tính</label>
+        <div class="row">
+            <label><input type="radio" name="gender" value="Nam"> Nam</label>
+            <label><input type="radio" name="gender" value="Nữ"> Nữ</label>
+            <label><input type="radio" name="gender" value="Khác"> Khác</label>
+        </div>
+        <span class="error" id="genderError"></span>
+    </div>
+
+    <div class="box">
+        <label><input type="checkbox" id="terms"> Tôi đồng ý với điều khoản</label>
+        <span class="error" id="termsError"></span>
+    </div>
+
+    <button type="submit">Đăng ký</button>
+</form>
+
+<div id="success"></div>
+
+<script>
+const form = document.getElementById("form")
+
+function showError(id, message){
+    document.getElementById(id + "Error").innerText = message
+}
+
+function clearError(id){
+    document.getElementById(id + "Error").innerText = ""
+}
+
+function validateFullname(){
+    let v = fullname.value.trim()
+    let regex = /^[A-Za-zÀ-ỹ\s]+$/
+
+    if(v === ""){
+        showError("fullname","Họ và tên không được để trống")
+        return false
+    }
+    if(v.length < 3){
+        showError("fullname","Họ và tên phải từ 3 ký tự")
+        return false
+    }
+    if(!regex.test(v)){
+        showError("fullname","Chỉ chứa chữ cái và khoảng trắng")
+        return false
+    }
+    clearError("fullname")
+    return true
+}
+
+function validateEmail(){
+    let v = email.value.trim()
+    let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if(v === ""){
+        showError("email","Email không được để trống")
+        return false
+    }
+    if(!regex.test(v)){
+        showError("email","Email không đúng định dạng")
+        return false
+    }
+    clearError("email")
+    return true
+}
+
+function validatePhone(){
+    let v = phone.value.trim()
+    let regex = /^0\d{9}$/
+
+    if(v === ""){
+        showError("phone","Số điện thoại không được để trống")
+        return false
+    }
+    if(!regex.test(v)){
+        showError("phone","Số điện thoại phải có 10 số và bắt đầu bằng 0")
+        return false
+    }
+    clearError("phone")
+    return true
+}
+
+function validatePassword(){
+    let v = password.value
+    let regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+
+    if(v === ""){
+        showError("password","Mật khẩu không được để trống")
+        return false
+    }
+    if(!regex.test(v)){
+        showError("password","Mật khẩu phải có ít nhất 8 ký tự, gồm hoa, thường, số")
+        return false
+    }
+    clearError("password")
+    return true
+}
+
+function validateConfirmPassword(){
+    let v = confirmPassword.value
+
+    if(v === ""){
+        showError("confirmPassword","Vui lòng xác nhận mật khẩu")
+        return false
+    }
+    if(v !== password.value){
+        showError("confirmPassword","Mật khẩu xác nhận không khớp")
+        return false
+    }
+    clearError("confirmPassword")
+    return true
+}
+
+function validateGender(){
+    let checked = document.querySelector('input[name="gender"]:checked')
+    if(!checked){
+        showError("gender","Vui lòng chọn giới tính")
+        return false
+    }
+    clearError("gender")
+    return true
+}
+
+function validateTerms(){
+    if(!terms.checked){
+        showError("terms","Bạn phải đồng ý điều khoản")
+        return false
+    }
+    clearError("terms")
+    return true
+}
+
+form.addEventListener("submit", function(e){
+    e.preventDefault()
+
+    let ok = validateFullname() & validateEmail() & validatePhone() & validatePassword() & validateConfirmPassword() & validateGender() & validateTerms()
+
+    if(ok){
+        let name = fullname.value.trim()
+        form.style.display = "none"
+        success.style.display = "block"
+        success.innerHTML = `Đăng ký thành công! 🎉<br>Chào mừng, <b>${name}</b>`
+    }
+})
+
+fullname.addEventListener("blur", validateFullname)
+email.addEventListener("blur", validateEmail)
+phone.addEventListener("blur", validatePhone)
+password.addEventListener("blur", validatePassword)
+confirmPassword.addEventListener("blur", validateConfirmPassword)
+
+fullname.addEventListener("input", () => clearError("fullname"))
+email.addEventListener("input", () => clearError("email"))
+phone.addEventListener("input", () => clearError("phone"))
+password.addEventListener("input", () => clearError("password"))
+confirmPassword.addEventListener("input", () => clearError("confirmPassword"))
+
+document.querySelectorAll('input[name="gender"]').forEach(item => {
+    item.addEventListener("blur", validateGender)
+    item.addEventListener("input", () => clearError("gender"))
+    item.addEventListener("change", () => clearError("gender"))
+})
+
+terms.addEventListener("blur", validateTerms)
+terms.addEventListener("input", () => clearError("terms"))
+terms.addEventListener("change", () => clearError("terms"))
+</script>
+
+</body>
+</html>

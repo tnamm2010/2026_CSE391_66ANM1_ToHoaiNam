@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bảng điểm sinh viên 1</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    max-width:650px;
+    margin:auto;
+    padding:15px;
+}
+
+h3{
+    text-align:center;
+}
+
+.form{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:15px;
+}
+
+input,button{
+    padding:10px;
+    font-size:15px;
+}
+
+button{
+    cursor:pointer;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:500px;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:center;
+}
+
+.low{
+    background:yellow;
+}
+
+@media (max-width:500px){
+
+h3{
+    font-size:18px;
+}
+
+input,button{
+    font-size:14px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<h3>Quản lý điểm sinh viên</h3>
+
+<div class="form">
+
+<input id="name" placeholder="Nhập họ tên">
+
+<input id="score" type="number" placeholder="Nhập điểm (0 - 10)">
+
+<button onclick="add()">Thêm</button>
+
+</div>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+<tr>
+<th>STT</th>
+<th>Họ tên</th>
+<th>Điểm</th>
+<th>Xếp loại</th>
+<th>Xóa</th>
+</tr>
+</thead>
+
+<tbody id="list"></tbody>
+
+</table>
+
+</div>
+
+<p id="stat"></p>
+
+<script>
+
+let students=[]
+
+function rank(score){
+
+if(score>=8.5) return "Giỏi"
+if(score>=7) return "Khá"
+if(score>=5) return "Trung bình"
+return "Yếu"
+
+}
+
+function render(){
+
+let html=""
+let sum=0
+
+students.forEach((s,i)=>{
+
+sum+=s.score
+
+html+=`
+<tr class="${s.score<5?'low':''}">
+<td>${i+1}</td>
+<td>${s.name}</td>
+<td>${s.score}</td>
+<td>${rank(s.score)}</td>
+<td><button onclick="remove(${i})">Xóa</button></td>
+</tr>
+`
+
+})
+
+document.getElementById("list").innerHTML=html
+
+let avg = students.length ? sum/students.length : 0
+
+document.getElementById("stat").innerText=
+`Tổng sinh viên: ${students.length} | Điểm trung bình: ${avg.toFixed(2)}`
+
+}
+
+function add(){
+
+let nameInput=document.getElementById("name")
+let scoreInput=document.getElementById("score")
+
+let name=nameInput.value.trim()
+let score=parseFloat(scoreInput.value)
+
+if(!name){
+alert("Vui lòng nhập họ tên")
+nameInput.focus()
+return
+}
+
+if(isNaN(score)||score<0||score>10){
+alert("Điểm phải từ 0 đến 10")
+scoreInput.focus()
+return
+}
+
+students.push({name,score})
+
+render()
+
+nameInput.value=""
+scoreInput.value=""
+
+nameInput.focus()
+
+}
+
+function remove(i){
+
+students.splice(i,1)
+
+render()
+
+}
+
+document.getElementById("score").addEventListener("keydown",function(e){
+
+if(e.key==="Enter"){
+add()
+}
+
+})
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+.primaryColor {
+  color: #0d6efd; /* Màu chủ đạo (ví dụ: xanh dương) */
+}
+
+.secondaryColor {
+  color: #6c757d; /* Màu thứ cấp (ví dụ: xám) */
+}
+
+.successColor {
+  color: #198754; /* Màu thành công (ví dụ: xanh lá cây) */
+}

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bảng điểm sinh viên Hoài Nam before</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    max-width:650px;
+    margin:auto;
+    padding:15px;
+}
+
+h3{
+    text-align:center;
+}
+
+.form,.tools{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:15px;
+}
+
+input,button,select{
+    padding:10px;
+    font-size:15px;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:500px;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:center;
+}
+
+.low{
+    background:yellow;
+}
+
+th{
+    cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<h3>Quản lý điểm sinh viên</h3>
+
+<div class="form">
+
+<input id="name" placeholder="Nhập họ tên">
+
+<input id="score" type="number" placeholder="Nhập điểm (0 - 10)">
+
+<button onclick="add()">Thêm</button>
+
+</div>
+
+
+<div class="tools">
+
+<input id="search" placeholder="Tìm kiếm tên">
+
+<select id="filter">
+<option value="all">Tất cả</option>
+<option value="Giỏi">Giỏi</option>
+<option value="Khá">Khá</option>
+<option value="Trung bình">Trung bình</option>
+<option value="Yếu">Yếu</option>
+</select>
+
+</div>
+
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+<tr>
+<th>STT</th>
+<th>Họ tên</th>
+<th onclick="sortScore()">Điểm <span id="arrow"></span></th>
+<th>Xếp loại</th>
+<th>Xóa</th>
+</tr>
+</thead>
+
+<tbody id="list"></tbody>
+
+</table>
+
+</div>
+
+<p id="stat"></p>
+
+
+<script>
+
+let students=[]
+let filteredStudents=[]
+
+let sortOrder=null
+
+function rank(score){
+
+if(score>=8.5) return "Giỏi"
+if(score>=7) return "Khá"
+if(score>=5) return "Trung bình"
+return "Yếu"
+
+}
+
+
+function render(){
+
+let html=""
+
+if(filteredStudents.length===0){
+
+html=`<tr><td colspan="5">Không có kết quả</td></tr>`
+
+}else{
+
+filteredStudents.forEach((s,i)=>{
+
+let index=students.indexOf(s)
+
+html+=`
+<tr class="${s.score<5?'low':''}">
+<td>${i+1}</td>
+<td>${s.name}</td>
+<td>${s.score}</td>
+<td>${rank(s.score)}</td>
+<td><button onclick="removeStudent(${index})">Xóa</button></td>
+</tr>
+`
+
+})
+
+}
+
+document.getElementById("list").innerHTML=html
+
+
+let avg = students.length
+? students.reduce((sum,s)=>sum+s.score,0)/students.length
+:0
+
+document.getElementById("stat").innerText=
+`Tổng sinh viên: ${students.length} | Điểm trung bình: ${avg.toFixed(2)}`
+
+}
+
+
+
+function applyFilters(){
+
+let keyword=document.getElementById("search").value.toLowerCase()
+
+let filter=document.getElementById("filter").value
+
+
+filteredStudents=students.filter(s=>{
+
+let matchName=s.name.toLowerCase().includes(keyword)
+
+let matchRank= filter==="all" || rank(s.score)===filter
+
+return matchName && matchRank
+
+})
+
+
+if(sortOrder==="asc"){
+filteredStudents.sort((a,b)=>a.score-b.score)
+}
+
+if(sortOrder==="desc"){
+filteredStudents.sort((a,b)=>b.score-a.score)
+}
+
+
+render()
+
+}
+
+
+
+function add(){
+
+let nameInput=document.getElementById("name")
+let scoreInput=document.getElementById("score")
+
+let name=nameInput.value.trim()
+let score=parseFloat(scoreInput.value)
+
+if(!name){
+alert("Vui lòng nhập họ tên")
+nameInput.focus()
+return
+}
+
+if(isNaN(score)||score<0||score>10){
+alert("Điểm phải từ 0 đến 10")
+scoreInput.focus()
+return
+}
+
+students.push({name,score})
+
+nameInput.value=""
+scoreInput.value=""
+
+nameInput.focus()
+
+applyFilters()
+
+}
+
+
+
+function removeStudent(i){
+
+students.splice(i,1)
+
+applyFilters()
+
+}
+
+
+
+function sortScore(){
+
+if(sortOrder===null || sortOrder==="desc"){
+sortOrder="asc"
+document.getElementById("arrow").innerText="▲"
+}else{
+sortOrder="desc"
+document.getElementById("arrow").innerText="▼"
+}
+
+applyFilters()
+
+}
+
+
+
+document.getElementById("score").addEventListener("keydown",function(e){
+
+if(e.key==="Enter"){
+add()
+}
+
+})
+
+
+document.getElementById("search").addEventListener("input",applyFilters)
+
+document.getElementById("filter").addEventListener("change",applyFilters)
+
+
+applyFilters()
+
+</script>
+
+</body>
+</html>

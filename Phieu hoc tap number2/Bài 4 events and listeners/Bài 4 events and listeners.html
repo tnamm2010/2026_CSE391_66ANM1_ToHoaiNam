@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Thực hành 4 Event Listeners</title>
+
+<style>
+
+.active{
+background-color: yellow;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1 id="title">Thực hành 4 Event Listeners</h1>
+
+<button id="myButton">Bấm vào nút này đi bro! </button>
+
+<script>
+
+let button = document.getElementById("myButton");
+let title = document.getElementById("title");
+
+button.addEventListener("click", function(){
+
+title.textContent = "we done !!!";
+button.classList.toggle("active");
+
+});
+
+button.addEventListener("mouseenter", function(){
+
+console.log("Chuột đang vào nút");
+
+});
+
+button.addEventListener("mouseleave", function(){
+
+console.log("Chuột rời khỏi nút");
+
+});
+
+</script>
+
+</body>
+</html> 

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thực hành 2 Modifying Elements</title>
+</head>
+
+<body>
+
+<h1 id="title">Tiêu đề ban đầu</h1>
+
+<div id="content"></div>
+
+<ul id="list">
+  <li>Thành Phần 1</li>
+  <li>Thành Phần 2</li>
+</ul>
+
+<script>
+
+let title = document.getElementById("title");
+title.textContent = "Tiêu đề đã được thay đổi";
+
+let contentDiv = document.getElementById("content");
+contentDiv.innerHTML = "<p>Nội dung được thêm bằng innerHTML</p>";
+
+let newItem = document.createElement("li");
+newItem.textContent = "Thành Phần 3";
+
+let list = document.getElementById("list");
+list.append(newItem);
+
+let firstItem = list.querySelector("li");
+firstItem.remove();
+
+</script>
+
+</body>
+</html>

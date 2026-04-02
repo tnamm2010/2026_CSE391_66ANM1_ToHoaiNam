@@ -11,25 +11,22 @@ function RoomList({ rooms, searchTerm }) {
       <table className="table table-hover align-middle mb-0">
         <thead className="table-dark">
           <tr>
-            <th>Tên Phòng</th>
-            <th>Mã Lớp</th>
-            <th>Số Máy Tính</th>
-            <th>Người Quản Lý</th>
+            <th>Room Name</th>
+            <th>Class Code</th>
+            <th>PC Count</th>
+            <th>Manager</th>
             <th>Email</th>
           </tr>
         </thead>
         <tbody>
           {filteredRooms.length > 0 ? (
-            filteredRooms.map((item, index) => (
-              <RoomItem 
-                key={index} 
-                item={item} 
-              />
+            filteredRooms.map((item) => (
+              <RoomItem key={item.id || item.maLop} item={item} />
             ))
           ) : (
             <tr>
-              <td colSpan="5" className="text-center py-4 text-muted">
-                Không tìm thấy kết quả nào phù hợp.
+              <td colSpan="5" className="text-center py-5 text-muted">
+                No matching results found.
               </td>
             </tr>
           )}

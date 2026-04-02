@@ -5,7 +5,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { initialRooms } from "./data";
 
 function App() {
-  const [rooms, setRooms] = useState(initialRooms);
+  // Ưu tiên lấy dữ liệu từ LocalStorage, nếu không có thì lấy initialRooms
+  const [rooms, setRooms] = useState(() => {
+    const saved = localStorage.getItem("phongLab");
+    return saved ? JSON.parse(saved) : initialRooms;
+  });
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
 
@@ -17,47 +22,34 @@ function App() {
     setRooms([...rooms, phong]);
   };
 
-  const xulyTimKiem = (e) => {
-    setSearchTerm(e.target.value);
-  };
-  const xulySubmit = (e) => {
-  e.preventDefault();
-  const validation = validateForm(phongMoi);
-  if (!Object.keys(validation).length) {
-    themPhong(phongMoi); // Lưu dữ liệu vào state của parent component
-    localStorage.setItem('room', JSON.stringify(phongMoi)); // Lưu dữ liệu vào localStorage
-    onClose();
-  } else {
-    setErrors(validation);
-  }
-};
-
   return (
     <div className="min-vh-100 bg-light">
       <nav className="navbar navbar-dark bg-dark px-3 shadow mb-4 d-flex justify-content-between align-items-center">
-        <span className="navbar-brand">LapMap</span>
-        <form className="d-flex">
+        <span className="navbar-brand">LapMap System</span>
+        <div className="d-flex">
           <input
             type="search"
-            placeholder="Find a lab..."
+            placeholder="Search room or class..."
             value={searchTerm}
-            onChange={xulyTimKiem}
-            className="form-control me-2"
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="form-control"
           />
-        </form>
+        </div>
       </nav>
 
       <div className="container">
-        <h3 className="text-primary mt-4">Computer Labs</h3>
-        <button className="btn btn-success shadow-sm mb-4" onClick={() => setShowForm(true)}>
-          + Add room
-        </button>
+        <div className="d-flex justify-content-between align-items-center mt-4 mb-4">
+          <h3 className="text-primary m-0">Computer Labs Management</h3>
+          <button className="btn btn-success shadow-sm" onClick={() => setShowForm(true)}>
+            + Add New Room
+          </button>
+        </div>
 
         {showForm && (
           <RoomForm rooms={rooms} themPhong={themPhong} onClose={() => setShowForm(false)} />
         )}
 
-        <div className="card shadow-sm">
+        <div className="card shadow-sm border-0">
           <RoomList rooms={rooms} searchTerm={searchTerm} />
         </div>
       </div>

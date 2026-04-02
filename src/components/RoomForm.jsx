@@ -11,45 +11,54 @@ function RoomForm({ rooms, themPhong, onClose }) {
 
   const [errors, setErrors] = useState({});
 
-  const xulySubmit = (e) => {
-    e.preventDefault();
-    const validation = validateForm(phongMoi);
-    if (!Object.keys(validation).length) {
-      themPhong(phongMoi);
-      onClose();
-    } else {
-      setErrors(validation);
-    }
-  };
-
-  const validateForm = (phongMoi) => {
+  const validateForm = (data) => {
     let errors = {};
 
-    if (!phongMoi.tenPhong.trim()) {
-      errors.tenPhong = "Tên Phòng không được để trống.";
+    // Kiểm tra trống cho tất cả các trường
+    if (!data.tenPhong.trim()) {
+      errors.tenPhong = "Room Name is required.";
     }
 
-    if (!phongMoi.maLop.trim()) {
-      errors.maLop = "Mã Lớp không được để trống.";
+    if (!data.maLop.trim()) {
+      errors.maLop = "Class Code is required.";
     }
 
-    if (isNaN(phongMoi.soMayTinh) || phongMoi.soMayTinh < 0) {
-      errors.soMayTinh = "Số Máy Tính phải là một số nguyên dương.";
+    if (!data.nguoiQuanLi.trim()) {
+      errors.nguoiQuanLi = "Manager Name is required.";
     }
 
-    if (!phongMoi.nguoiQuanLi.trim()) {
-      errors.nguoiQuanLi = "Người Quản Lý không được để trống.";
+    // Kiểm tra số lượng máy tính (1-60)
+    const count = parseInt(data.soMayTinh);
+    if (isNaN(count) || count < 1 || count > 60) {
+      errors.soMayTinh = "Number of computers must be between 1 and 60.";
     }
 
-    if (!/\S+@\S+\.\S+/.test(phongMoi.email)) {
-      errors.email = "Email không hợp lệ.";
+    // Kiểm tra định dạng Email và không được để trống
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!data.email.trim()) {
+      errors.email = "Email is required.";
+    } else if (!emailRegex.test(data.email)) {
+      errors.email = "Invalid email format.";
     }
 
     return errors;
   };
 
+  const xulySubmit = (e) => {
+    e.preventDefault();
+    const validationErrors = validateForm(phongMoi);
+    
+    if (Object.keys(validationErrors).length === 0) {
+      themPhong({ ...phongMoi, id: Date.now() });
+      onClose();
+    } else {
+      setErrors(validationErrors);
+    }
+  };
+
   const xulyChange = (e) => {
-    setPhongMoi({ ...phongMoi, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setPhongMoi({ ...phongMoi, [name]: value });
   };
 
   return (
@@ -58,86 +67,76 @@ function RoomForm({ rooms, themPhong, onClose }) {
         <div className="modal-content shadow-lg">
           <form onSubmit={xulySubmit}>
             <div className="modal-header bg-primary text-white">
-              <h5 className="modal-title">Thêm Phòng Lab</h5>
+              <h5 className="modal-title">Add New Computer Lab</h5>
               <button type="button" className="btn-close btn-close-white" onClick={onClose}></button>
             </div>
 
             <div className="modal-body">
               {/* TÊN PHÒNG */}
               <div className="mb-3">
-                <label className="form-label fw-bold">Tên Phòng</label>
+                <label className="form-label fw-bold">Room Name</label>
                 <input 
-                  className={`form-control ${errors.tenPhong ? 'is-invalid' : ''}`}
-                  onChange={(e) => xulyChange(e)}
-                  value={phongMoi.tenPhong}
                   name="tenPhong"
+                  className={`form-control ${errors.tenPhong ? 'is-invalid' : ''}`}
+                  onChange={xulyChange}
+                  value={phongMoi.tenPhong}
                 />
-                {errors.tenPhong && (
-                  <div className="invalid-feedback">{errors.tenPhong}</div>
-                )}
+                {errors.tenPhong && <div className="invalid-feedback">{errors.tenPhong}</div>}
               </div>
 
               {/* MÃ LỚP */}
               <div className="mb-3">
-                <label className="form-label fw-bold">Mã Lớp</label>
+                <label className="form-label fw-bold">Class Code</label>
                 <input 
-                  className={`form-control ${errors.maLop ? 'is-invalid' : ''}`}
-                  onChange={(e) => xulyChange(e)}
-                  value={phongMoi.maLop}
                   name="maLop"
+                  className={`form-control ${errors.maLop ? 'is-invalid' : ''}`}
+                  onChange={xulyChange}
+                  value={phongMoi.maLop}
                 />
-                {errors.maLop && (
-                  <div className="invalid-feedback">{errors.maLop}</div>
-                )}
+                {errors.maLop && <div className="invalid-feedback">{errors.maLop}</div>}
               </div>
 
               {/* SỐ MÁY TÍNH */}
               <div className="mb-3">
-                <label className="form-label fw-bold">Số Máy Tính</label>
+                <label className="form-label fw-bold">Number of Computers (1-60)</label>
                 <input 
                   type="number"
-                  className={`form-control ${errors.soMayTinh ? 'is-invalid' : ''}`}
-                  onChange={(e) => xulyChange(e)}
-                  value={phongMoi.soMayTinh}
                   name="soMayTinh"
+                  className={`form-control ${errors.soMayTinh ? 'is-invalid' : ''}`}
+                  onChange={xulyChange}
+                  value={phongMoi.soMayTinh}
                 />
-                {errors.soMayTinh && (
-                  <div className="invalid-feedback">{errors.soMayTinh}</div>
-                )}
+                {errors.soMayTinh && <div className="invalid-feedback">{errors.soMayTinh}</div>}
               </div>
 
               {/* NGƯỜI QUẢN LÝ */}
               <div className="mb-3">
-                <label className="form-label fw-bold">Người Quản Lý</label>
+                <label className="form-label fw-bold">Manager</label>
                 <input 
-                  className={`form-control ${errors.nguoiQuanLi ? 'is-invalid' : ''}`}
-                  onChange={(e) => xulyChange(e)}
-                  value={phongMoi.nguoiQuanLi}
                   name="nguoiQuanLi"
+                  className={`form-control ${errors.nguoiQuanLi ? 'is-invalid' : ''}`}
+                  onChange={xulyChange}
+                  value={phongMoi.nguoiQuanLi}
                 />
-                {errors.nguoiQuanLi && (
-                  <div className="invalid-feedback">{errors.nguoiQuanLi}</div>
-                )}
+                {errors.nguoiQuanLi && <div className="invalid-feedback">{errors.nguoiQuanLi}</div>}
               </div>
 
               {/* EMAIL */}
               <div className="mb-3">
-                <label className="form-label fw-bold">Email</label>
+                <label className="form-label fw-bold">Email Address</label>
                 <input 
-                  className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                  onChange={(e) => xulyChange(e)}
-                  value={phongMoi.email}
                   name="email"
+                  className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                  onChange={xulyChange}
+                  value={phongMoi.email}
                 />
-                {errors.email && (
-                  <div className="invalid-feedback">{errors.email}</div>
-                )}
+                {errors.email && <div className="invalid-feedback">{errors.email}</div>}
               </div>
             </div>
 
             <div className="modal-footer">
-              <button type="submit" className="btn btn-primary">Thêm</button>
-              <button type="button" className="btn btn-secondary" onClick={onClose}>Hủy bỏ</button>
+              <button type="submit" className="btn btn-primary">Add Room</button>
+              <button type="button" className="btn btn-secondary" onClick={onClose}>Cancel</button>
             </div>
           </form>
         </div>
